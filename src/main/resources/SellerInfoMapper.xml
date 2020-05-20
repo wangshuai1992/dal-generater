@@ -1,104 +1,40 @@
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.clubfactory.center.seller.core.mapper.seller.SellerInfoMapper">
 
     <resultMap id="baseResult" type="com.clubfactory.center.seller.core.dataobject.seller.SellerInfoDO">
         <result property="id" column="id"/>
-        <result property="sellerName" column="seller_name"/>
-        <result property="loginId" column="login_id"/>
-        <result property="status" column="status"/>
-        <result property="lastApplyTime" column="last_apply_time"/>
-        <result property="verifyCount" column="verify_count"/>
-        <result property="verifyTime" column="verify_time"/>
-        <result property="verifyUserId" column="verify_user_id"/>
-        <result property="verifyUserName" column="verify_user_name"/>
-        <result property="verifyRejectReason" column="verify_reject_reason"/>
-        <result property="email" column="email"/>
-        <result property="companyAttribute" column="company_attribute"/>
-        <result property="messagePhone" column="message_phone"/>
-        <result property="country" column="country"/>
-        <result property="pan" column="pan"/>
-        <result property="contactsName" column="contacts_name"/>
-        <result property="contactsPhone" column="contacts_phone"/>
-        <result property="brandAuthFrontUrl" column="brand_auth_front_url"/>
-        <result property="brandAuthBackUrl" column="brand_auth_back_url"/>
-        <result property="gstNo" column="gst_no"/>
-        <result property="panFrontUrl" column="pan_front_url"/>
-        <result property="panBackUrl" column="pan_back_url"/>
-        <result property="otherStoreLinks" column="other_store_links"/>
-        <result property="whatsAppAccount" column="whats_app_account"/>
-        <result property="tan" column="tan"/>
-        <result property="extInfo" column="ext_info"/>
-        <result property="bdName" column="bd_name"/>
-        <result property="isTest" column="is_test"/>
+        <result property="sellerId" column="seller_id"/>
+        <result property="bankName" column="bank_name"/>
+        <result property="bankAccount" column="bank_account"/>
+        <result property="accountHolder" column="account_holder"/>
+        <result property="ifscCode" column="ifsc_code"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <sql id="column_List">
         id,
-        seller_name,
-        login_id,
-        status,
-        last_apply_time,
-        verify_count,
-        verify_time,
-        verify_user_id,
-        verify_user_name,
-        verify_reject_reason,
-        email,
-        company_attribute,
-        message_phone,
-        country,
-        pan,
-        contacts_name,
-        contacts_phone,
-        brand_auth_front_url,
-        brand_auth_back_url,
-        gst_no,
-        pan_front_url,
-        pan_back_url,
-        other_store_links,
-        whats_app_account,
-        tan,
-        ext_info,
-        bd_name,
-        is_test,
+        seller_id,
+        bank_name,
+        bank_account,
+        account_holder,
+        ifsc_code,
         create_time,
         update_time
     </sql>
 
-    <insert id="insert" parameterType="com.clubfactory.center.seller.core.dataobject.seller.SellerInfoDO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.clubfactory.center.seller.core.dataobject.seller.SellerInfoDO"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO seller_info (
         <include refid="column_List"/>
         ) VALUES (
         null,
-        #{sellerName},
-        #{loginId},
-        #{status},
-        #{lastApplyTime},
-        #{verifyCount},
-        #{verifyTime},
-        #{verifyUserId},
-        #{verifyUserName},
-        #{verifyRejectReason},
-        #{email},
-        #{companyAttribute},
-        #{messagePhone},
-        #{country},
-        #{pan},
-        #{contactsName},
-        #{contactsPhone},
-        #{brandAuthFrontUrl},
-        #{brandAuthBackUrl},
-        #{gstNo},
-        #{panFrontUrl},
-        #{panBackUrl},
-        #{otherStoreLinks},
-        #{whatsAppAccount},
-        #{tan},
-        #{extInfo},
-        #{bdName},
-        #{isTest},
+        #{sellerId},
+        #{bankName},
+        #{bankAccount},
+        #{accountHolder},
+        #{ifscCode},
         now(),
         now()
         )
@@ -111,33 +47,11 @@
         <foreach collection="list" item="item" separator=",">
             (
             null,
-            #{item.sellerName},
-            #{item.loginId},
-            #{item.status},
-            #{item.lastApplyTime},
-            #{item.verifyCount},
-            #{item.verifyTime},
-            #{item.verifyUserId},
-            #{item.verifyUserName},
-            #{item.verifyRejectReason},
-            #{item.email},
-            #{item.companyAttribute},
-            #{item.messagePhone},
-            #{item.country},
-            #{item.pan},
-            #{item.contactsName},
-            #{item.contactsPhone},
-            #{item.brandAuthFrontUrl},
-            #{item.brandAuthBackUrl},
-            #{item.gstNo},
-            #{item.panFrontUrl},
-            #{item.panBackUrl},
-            #{item.otherStoreLinks},
-            #{item.whatsAppAccount},
-            #{item.tan},
-            #{item.extInfo},
-            #{item.bdName},
-            #{item.isTest},
+            #{item.sellerId},
+            #{item.bankName},
+            #{item.bankAccount},
+            #{item.accountHolder},
+            #{item.ifscCode},
             now(),
             now()
             )
@@ -147,86 +61,20 @@
     <update id="update" parameterType="com.clubfactory.center.seller.core.dataobject.seller.SellerInfoDO">
         UPDATE seller_info
         <set>
-            <if test="sellerName != null and sellerName != '' ">
-                seller_name = #{sellerName},
+            <if test="sellerId != null">
+                seller_id = #{sellerId},
             </if>
-            <if test="loginId != null">
-                login_id = #{loginId},
+            <if test="bankName != null and bankName != '' ">
+                bank_name = #{bankName},
             </if>
-            <if test="status != null and status != '' ">
-                status = #{status},
+            <if test="bankAccount != null and bankAccount != '' ">
+                bank_account = #{bankAccount},
             </if>
-            <if test="lastApplyTime != null">
-                last_apply_time = #{lastApplyTime},
+            <if test="accountHolder != null and accountHolder != '' ">
+                account_holder = #{accountHolder},
             </if>
-            <if test="verifyCount != null">
-                verify_count = #{verifyCount},
-            </if>
-            <if test="verifyTime != null">
-                verify_time = #{verifyTime},
-            </if>
-            <if test="verifyUserId != null">
-                verify_user_id = #{verifyUserId},
-            </if>
-            <if test="verifyUserName != null and verifyUserName != '' ">
-                verify_user_name = #{verifyUserName},
-            </if>
-            <if test="verifyRejectReason != null and verifyRejectReason != '' ">
-                verify_reject_reason = #{verifyRejectReason},
-            </if>
-            <if test="email != null and email != '' ">
-                email = #{email},
-            </if>
-            <if test="companyAttribute != null and companyAttribute != '' ">
-                company_attribute = #{companyAttribute},
-            </if>
-            <if test="messagePhone != null and messagePhone != '' ">
-                message_phone = #{messagePhone},
-            </if>
-            <if test="country != null and country != '' ">
-                country = #{country},
-            </if>
-            <if test="pan != null and pan != '' ">
-                pan = #{pan},
-            </if>
-            <if test="contactsName != null and contactsName != '' ">
-                contacts_name = #{contactsName},
-            </if>
-            <if test="contactsPhone != null and contactsPhone != '' ">
-                contacts_phone = #{contactsPhone},
-            </if>
-            <if test="brandAuthFrontUrl != null and brandAuthFrontUrl != '' ">
-                brand_auth_front_url = #{brandAuthFrontUrl},
-            </if>
-            <if test="brandAuthBackUrl != null and brandAuthBackUrl != '' ">
-                brand_auth_back_url = #{brandAuthBackUrl},
-            </if>
-            <if test="gstNo != null and gstNo != '' ">
-                gst_no = #{gstNo},
-            </if>
-            <if test="panFrontUrl != null and panFrontUrl != '' ">
-                pan_front_url = #{panFrontUrl},
-            </if>
-            <if test="panBackUrl != null and panBackUrl != '' ">
-                pan_back_url = #{panBackUrl},
-            </if>
-            <if test="otherStoreLinks != null and otherStoreLinks != '' ">
-                other_store_links = #{otherStoreLinks},
-            </if>
-            <if test="whatsAppAccount != null and whatsAppAccount != '' ">
-                whats_app_account = #{whatsAppAccount},
-            </if>
-            <if test="tan != null and tan != '' ">
-                tan = #{tan},
-            </if>
-            <if test="extInfo != null and extInfo != '' ">
-                ext_info = #{extInfo},
-            </if>
-            <if test="bdName != null and bdName != '' ">
-                bd_name = #{bdName},
-            </if>
-            <if test="isTest != null">
-                is_test = #{isTest},
+            <if test="ifscCode != null and ifscCode != '' ">
+                ifsc_code = #{ifscCode},
             </if>
             update_time = now()
         </set>
@@ -237,86 +85,20 @@
         <foreach collection="list" item="item" open="" close="" separator=";">
             UPDATE seller_info
             <set>
-                <if test="sellerName != null and sellerName != '' ">
-                    seller_name = #{sellerName},
+                <if test="sellerId != null">
+                    seller_id = #{sellerId},
                 </if>
-                <if test="loginId != null">
-                    login_id = #{loginId},
+                <if test="bankName != null and bankName != '' ">
+                    bank_name = #{bankName},
                 </if>
-                <if test="status != null and status != '' ">
-                    status = #{status},
+                <if test="bankAccount != null and bankAccount != '' ">
+                    bank_account = #{bankAccount},
                 </if>
-                <if test="lastApplyTime != null">
-                    last_apply_time = #{lastApplyTime},
+                <if test="accountHolder != null and accountHolder != '' ">
+                    account_holder = #{accountHolder},
                 </if>
-                <if test="verifyCount != null">
-                    verify_count = #{verifyCount},
-                </if>
-                <if test="verifyTime != null">
-                    verify_time = #{verifyTime},
-                </if>
-                <if test="verifyUserId != null">
-                    verify_user_id = #{verifyUserId},
-                </if>
-                <if test="verifyUserName != null and verifyUserName != '' ">
-                    verify_user_name = #{verifyUserName},
-                </if>
-                <if test="verifyRejectReason != null and verifyRejectReason != '' ">
-                    verify_reject_reason = #{verifyRejectReason},
-                </if>
-                <if test="email != null and email != '' ">
-                    email = #{email},
-                </if>
-                <if test="companyAttribute != null and companyAttribute != '' ">
-                    company_attribute = #{companyAttribute},
-                </if>
-                <if test="messagePhone != null and messagePhone != '' ">
-                    message_phone = #{messagePhone},
-                </if>
-                <if test="country != null and country != '' ">
-                    country = #{country},
-                </if>
-                <if test="pan != null and pan != '' ">
-                    pan = #{pan},
-                </if>
-                <if test="contactsName != null and contactsName != '' ">
-                    contacts_name = #{contactsName},
-                </if>
-                <if test="contactsPhone != null and contactsPhone != '' ">
-                    contacts_phone = #{contactsPhone},
-                </if>
-                <if test="brandAuthFrontUrl != null and brandAuthFrontUrl != '' ">
-                    brand_auth_front_url = #{brandAuthFrontUrl},
-                </if>
-                <if test="brandAuthBackUrl != null and brandAuthBackUrl != '' ">
-                    brand_auth_back_url = #{brandAuthBackUrl},
-                </if>
-                <if test="gstNo != null and gstNo != '' ">
-                    gst_no = #{gstNo},
-                </if>
-                <if test="panFrontUrl != null and panFrontUrl != '' ">
-                    pan_front_url = #{panFrontUrl},
-                </if>
-                <if test="panBackUrl != null and panBackUrl != '' ">
-                    pan_back_url = #{panBackUrl},
-                </if>
-                <if test="otherStoreLinks != null and otherStoreLinks != '' ">
-                    other_store_links = #{otherStoreLinks},
-                </if>
-                <if test="whatsAppAccount != null and whatsAppAccount != '' ">
-                    whats_app_account = #{whatsAppAccount},
-                </if>
-                <if test="tan != null and tan != '' ">
-                    tan = #{tan},
-                </if>
-                <if test="extInfo != null and extInfo != '' ">
-                    ext_info = #{extInfo},
-                </if>
-                <if test="bdName != null and bdName != '' ">
-                    bd_name = #{bdName},
-                </if>
-                <if test="isTest != null">
-                    is_test = #{isTest},
+                <if test="ifscCode != null and ifscCode != '' ">
+                    ifsc_code = #{ifscCode},
                 </if>
                 update_time = now()
             </set>
@@ -349,86 +131,20 @@
             <if test="id != null">
                 AND seller_info.id = #{id}
             </if>
-            <if test="sellerName != null and sellerName != '' ">
-                AND seller_info.seller_name = #{sellerName}
+            <if test="sellerId != null">
+                AND seller_info.seller_id = #{sellerId}
             </if>
-            <if test="loginId != null">
-                AND seller_info.login_id = #{loginId}
+            <if test="bankName != null and bankName != '' ">
+                AND seller_info.bank_name = #{bankName}
             </if>
-            <if test="status != null and status != '' ">
-                AND seller_info.status = #{status}
+            <if test="bankAccount != null and bankAccount != '' ">
+                AND seller_info.bank_account = #{bankAccount}
             </if>
-            <if test="lastApplyTime != null">
-                AND seller_info.last_apply_time = #{lastApplyTime}
+            <if test="accountHolder != null and accountHolder != '' ">
+                AND seller_info.account_holder = #{accountHolder}
             </if>
-            <if test="verifyCount != null">
-                AND seller_info.verify_count = #{verifyCount}
-            </if>
-            <if test="verifyTime != null">
-                AND seller_info.verify_time = #{verifyTime}
-            </if>
-            <if test="verifyUserId != null">
-                AND seller_info.verify_user_id = #{verifyUserId}
-            </if>
-            <if test="verifyUserName != null and verifyUserName != '' ">
-                AND seller_info.verify_user_name = #{verifyUserName}
-            </if>
-            <if test="verifyRejectReason != null and verifyRejectReason != '' ">
-                AND seller_info.verify_reject_reason = #{verifyRejectReason}
-            </if>
-            <if test="email != null and email != '' ">
-                AND seller_info.email = #{email}
-            </if>
-            <if test="companyAttribute != null and companyAttribute != '' ">
-                AND seller_info.company_attribute = #{companyAttribute}
-            </if>
-            <if test="messagePhone != null and messagePhone != '' ">
-                AND seller_info.message_phone = #{messagePhone}
-            </if>
-            <if test="country != null and country != '' ">
-                AND seller_info.country = #{country}
-            </if>
-            <if test="pan != null and pan != '' ">
-                AND seller_info.pan = #{pan}
-            </if>
-            <if test="contactsName != null and contactsName != '' ">
-                AND seller_info.contacts_name = #{contactsName}
-            </if>
-            <if test="contactsPhone != null and contactsPhone != '' ">
-                AND seller_info.contacts_phone = #{contactsPhone}
-            </if>
-            <if test="brandAuthFrontUrl != null and brandAuthFrontUrl != '' ">
-                AND seller_info.brand_auth_front_url = #{brandAuthFrontUrl}
-            </if>
-            <if test="brandAuthBackUrl != null and brandAuthBackUrl != '' ">
-                AND seller_info.brand_auth_back_url = #{brandAuthBackUrl}
-            </if>
-            <if test="gstNo != null and gstNo != '' ">
-                AND seller_info.gst_no = #{gstNo}
-            </if>
-            <if test="panFrontUrl != null and panFrontUrl != '' ">
-                AND seller_info.pan_front_url = #{panFrontUrl}
-            </if>
-            <if test="panBackUrl != null and panBackUrl != '' ">
-                AND seller_info.pan_back_url = #{panBackUrl}
-            </if>
-            <if test="otherStoreLinks != null and otherStoreLinks != '' ">
-                AND seller_info.other_store_links = #{otherStoreLinks}
-            </if>
-            <if test="whatsAppAccount != null and whatsAppAccount != '' ">
-                AND seller_info.whats_app_account = #{whatsAppAccount}
-            </if>
-            <if test="tan != null and tan != '' ">
-                AND seller_info.tan = #{tan}
-            </if>
-            <if test="extInfo != null and extInfo != '' ">
-                AND seller_info.ext_info = #{extInfo}
-            </if>
-            <if test="bdName != null and bdName != '' ">
-                AND seller_info.bd_name = #{bdName}
-            </if>
-            <if test="isTest != null">
-                AND seller_info.is_test = #{isTest}
+            <if test="ifscCode != null and ifscCode != '' ">
+                AND seller_info.ifsc_code = #{ifscCode}
             </if>
             <if test="createTime != null ">
                 AND seller_info.create_time = #{createTime}
@@ -439,12 +155,14 @@
         </where>
     </sql>
 
-    <select id="countByQuery" parameterType="com.clubfactory.center.seller.core.query.seller.SellerInfoQuery" resultType="java.lang.Integer">
+    <select id="countByQuery" parameterType="com.clubfactory.center.seller.core.query.seller.SellerInfoQuery"
+            resultType="java.lang.Integer">
         SELECT COUNT(*) FROM seller_info
         <include refid="query_condition"/>
     </select>
 
-    <select id="pageQuery" resultMap="baseResult" parameterType="com.clubfactory.center.seller.core.query.seller.SellerInfoQuery">
+    <select id="pageQuery" resultMap="baseResult"
+            parameterType="com.clubfactory.center.seller.core.query.seller.SellerInfoQuery">
         SELECT
         <include refid="column_List"/>
         FROM seller_info
@@ -453,7 +171,8 @@
         LIMIT #{startPos},#{pageSize}
     </select>
 
-    <select id="fullQuery" resultMap="baseResult" parameterType="com.clubfactory.center.seller.core.query.seller.SellerInfoQuery">
+    <select id="fullQuery" resultMap="baseResult"
+            parameterType="com.clubfactory.center.seller.core.query.seller.SellerInfoQuery">
         SELECT
         <include refid="column_List"/>
         FROM seller_info
@@ -461,3 +180,4 @@
     </select>
 
 </mapper>
+

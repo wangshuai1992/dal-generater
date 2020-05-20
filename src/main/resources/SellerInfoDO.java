@@ -1,15 +1,15 @@
-package com.clubfactory.center.seller.core.query.seller;
+package com.clubfactory.center.seller.core.dataobject.seller;
 
 /**
- * SellerInfoQuery
+ * SellerInfoDO
  *
  * @author wangshuai
  * @date 2020-05-20 22:26
  */
 @Data
-public class SellerInfoQuery<T> extends PageQuery<T> {
+public class SellerInfoDO extends BaseDO {
 
-    private static final long serialVersionUID = -004475904324205113L;
+    private static final long serialVersionUID = -884429125847036858L;
 
     /**
      * 卖家id

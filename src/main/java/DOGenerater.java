@@ -1,5 +1,5 @@
 import com.alibaba.fastjson.JSON;
-import lombok.Data;
+import util.FileUtil;
 import util.UnderlineHumpConvertUtil;
 
 import java.util.ArrayList;
@@ -14,37 +14,60 @@ import java.util.stream.Collectors;
  * @version V1.0
  * @date 2020-05-20 19:31
  */
+@SuppressWarnings("StringConcatenationInsideStringBufferAppend")
 public class DOGenerater {
 
-    public static void main(String[] args) {
+    public List<SqlColumn> generate() throws Exception {
         String[] rows = Generater.sql.split("\n");
         List<String> rowList = Arrays.stream(rows).map(String::trim).collect(Collectors.toList());
         rowList.removeIf(row -> !row.startsWith("`"));
-        List<SqlColumn> list = new ArrayList<>();
+        List<SqlColumn> sqlColumns = new ArrayList<>();
         for (String row : rowList) {
             String[] strs = row.split(" ");
             SqlColumn sqlColumn = new SqlColumn();
-            sqlColumn.name = strs[0].substring(1, strs[0].length() - 1);
-            sqlColumn.javaName = UnderlineHumpConvertUtil.underlineToHump(sqlColumn.name);
-            sqlColumn.typeDef = strs[1];
-            sqlColumn.javaType = sqlTypeToJavaType(sqlColumn.typeDef);
+            sqlColumn.setName(strs[0].substring(1, strs[0].length() - 1));
+            sqlColumn.setJavaName(UnderlineHumpConvertUtil.underlineToHump(sqlColumn.getName()));
+            sqlColumn.setTypeDef(strs[1]);
+            sqlColumn.setJavaType(sqlTypeToJavaType(sqlColumn.getTypeDef()));
             if (strs[strs.length - 2].equalsIgnoreCase("comment")) {
-                sqlColumn.comment = strs[strs.length - 1].substring(1, strs[strs.length - 1].length() - 1);
+                sqlColumn.setComment(strs[strs.length - 1].substring(1, strs[strs.length - 1].length() - 2));
             } else {
-                sqlColumn.comment = sqlColumn.javaName;
+                sqlColumn.setComment(sqlColumn.getJavaName());
             }
 
-            if (!sqlColumn.javaName.equals("id") && !sqlColumn.javaName.equals("createTime") && !sqlColumn.javaName.equals("updateTime")) {
-                list.add(sqlColumn);
+            if (!sqlColumn.getJavaName().equals("id") && !sqlColumn.getJavaName().equals("createTime") && !sqlColumn.getJavaName().equals("updateTime")) {
+                sqlColumns.add(sqlColumn);
             }
         }
-        System.out.println(JSON.toJSONString(list));
-
-        Class<?> clazz = createDOFile();
+        System.out.println(JSON.toJSONString(sqlColumns));
+        createDOFile(sqlColumns);
+        return sqlColumns;
     }
 
-    private static Class<?> createDOFile() {
+    public static void main(String[] args) throws Exception {
+        new DOGenerater().generate();
+    }
 
+    private void createDOFile(List<SqlColumn> sqlColumns) throws Exception {
+        String javaFile = FileUtil.readFile(Generater.resourcePath + "/template/TemplateDO.java");
+        javaFile = Generater.globalReplace(javaFile);
+
+        // 替换%%fields%%
+        StringBuilder tempBuilder = new StringBuilder();
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            tempBuilder.append("    /**\n" +
+                    "     * " + sqlColumn.getComment() + "\n" +
+                    "     */\n" +
+                    "    private " + sqlColumn.getJavaType() + " " + sqlColumn.getJavaName() + ";");
+            if (i != sqlColumns.size() - 1) {
+                tempBuilder.append("\n\n");
+            }
+        }
+        javaFile = javaFile.replaceAll("%%fields%%", tempBuilder.toString());
+
+        // 生成结果文件
+        FileUtil.createOrOverwriteFile(Generater.resourcePath + Generater.doClassFileName, javaFile);
     }
 
     private static String sqlTypeToJavaType(String typeDef) {
@@ -61,33 +84,4 @@ public class DOGenerater {
         return "String";
     }
 
-    @Data
-    private static class SqlColumn {
-
-        /**
-         * 列名
-         */
-        private String name;
-
-        /**
-         * 实体类字段名
-         */
-        private String javaName;
-
-        /**
-         * 列类型定义  如int(11)、varchar(128)
-         */
-        private String typeDef;
-
-        /**
-         * java字段类型 String、Date
-         */
-        private String javaType;
-
-        /**
-         * 备注
-         */
-        private String comment;
-
-    }
 }

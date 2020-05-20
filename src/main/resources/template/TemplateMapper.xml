@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="%%mapperReference%%">
 
-    <resultMap id="baseResult" type="%%DOReference%%">
+    <resultMap id="baseResult" type="%%doReference%%">
         <result property="id" column="id"/>
         %%resultMapRow%%
         <result property="createTime" column="create_time"/>
@@ -16,7 +16,7 @@
         update_time
     </sql>
 
-    <insert id="insert" parameterType="%%DOReference%%"
+    <insert id="insert" parameterType="%%doReference%%"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO %%tableName%% (
         <include refid="column_List"/>
@@ -42,7 +42,7 @@
         </foreach>
     </insert>
 
-    <update id="update" parameterType="%%DOReference%%">
+    <update id="update" parameterType="%%doReference%%">
         UPDATE %%tableName%%
         <set>
             %%updateSet%%

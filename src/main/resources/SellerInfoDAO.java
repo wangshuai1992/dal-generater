@@ -1,8 +1,10 @@
+package com.clubfactory.center.seller.core.dao.seller;
+
 /**
  * SellerInfoDAO
  *
  * @author wangshuai
- * @date 2020-05-20 19:08
+ * @date 2020-05-20 22:26
  */
 @Service
 @Slf4j

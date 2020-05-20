@@ -3,11 +3,8 @@ import util.DateUtils;
 import util.FileUtil;
 import util.UnderlineHumpConvertUtil;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 生成dal层
@@ -19,6 +16,9 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"ResultOfMethodCallIgnored", "StringConcatenationInsideStringBufferAppend"})
 public class Generater {
 
+    /**
+     * edit
+     */
     public static String entityName = "SellerInfo";
     public static String sql = "DROP TABLE IF EXISTS `seller_bank_info`;\n" +
             "CREATE TABLE `seller_bank_info` (\n" +
@@ -33,13 +33,9 @@ public class Generater {
             "    PRIMARY KEY (`id`),\n" +
             "    KEY `idx_seller_id` (`seller_id`)\n" +
             ") ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT='卖家银行卡信息表';";
-    public static String mapperReference = "com.clubfactory.center.seller.core.mapper.seller.SellerInfoMapper";
-    public static String doReference = "com.clubfactory.center.seller.core.dataobject.seller.SellerInfoDO";
-    public static String queryReference = "com.clubfactory.center.seller.core.query.seller.SellerInfoQuery";
-    public static String daoReference = "com.clubfactory.center.seller.core.dao.seller.SellerInfoDAO";
 
-    public static Class<?> doClazz = SellerInfoDO.class;
     public static String tableName = UnderlineHumpConvertUtil.humpToUnderline(entityName);
+    public static String doClassFileName = entityName + "DO.java";
     public static String doClassName = entityName + "DO";
     public static String mapperFileName = entityName + "Mapper.xml";
     public static String mapperClassFileName = entityName + "Mapper.java";
@@ -50,14 +46,24 @@ public class Generater {
     public static String daoClassName = entityName + "DAO";
     public static String resourcePath = Thread.currentThread().getContextClassLoader().getResource("").getPath().replace("/target/classes", "/src/main/resources");
 
+    /**
+     * edit
+     */
+    public static String corePackage = "com.clubfactory.center.seller.core";
+    public static String doPackage = corePackage + ".dataobject.seller";
+    public static String mapperPackage = corePackage + ".mapper.seller";
+    public static String queryPackage = corePackage + ".query.seller";
+    public static String daoPackage = corePackage + ".dao.seller";
+
+    public static String doReference = doPackage + "." + doClassName;
+    public static String mapperReference = mapperPackage + "." + mapperClassName;
+    public static String queryReference = queryPackage + "." + queryClassName;
+    public static String daoReference = daoPackage + "." + daoClassName;
 
     public static void main(String[] args) throws Exception {
-        List<Field> fieldList = Arrays.stream(doClazz.getDeclaredFields()).collect(Collectors.toList());
-        fieldList.removeIf(field -> field.getName().equals("serialVersionUID"));
-
-
-        createMapperXML(fieldList);
-        createQueryJava(fieldList);
+        List<SqlColumn> sqlColumns = new DOGenerater().generate();
+        createMapperXML(sqlColumns);
+        createQueryJava(sqlColumns);
         createMapperJava();
         createDAOJava();
     }
@@ -78,17 +84,19 @@ public class Generater {
         FileUtil.createOrOverwriteFile(resourcePath + mapperClassFileName, javaFile);
     }
 
-    private static void createQueryJava(List<Field> fieldList) throws Exception {
+    private static void createQueryJava(List<SqlColumn> sqlColumns) throws Exception {
         String javaFile = FileUtil.readFile(resourcePath + "/template/TemplateQuery.java");
         javaFile = globalReplace(javaFile);
 
         // 替换%%fields%%
         StringBuilder tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            String fieldName = field.getName();
-            tempBuilder.append("    private " + field.getType().getName().substring(field.getType().getName().lastIndexOf('.') + 1) + " " + fieldName + ";");
-            if (i != fieldList.size() - 1) {
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            tempBuilder.append("    /**\n" +
+                    "     * " + sqlColumn.getComment() + "\n" +
+                    "     */\n" +
+                    "    private " + sqlColumn.getJavaType() + " " + sqlColumn.getJavaName() + ";");
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n\n");
             }
         }
@@ -98,20 +106,20 @@ public class Generater {
         FileUtil.createOrOverwriteFile(resourcePath + queryClassFileName, javaFile);
     }
 
-    private static void createMapperXML(List<Field> fieldList) throws Exception {
-        String xml = FileUtil.readFile(resourcePath + "/template/TemplateMapper.java");
+    private static void createMapperXML(List<SqlColumn> sqlColumns) throws Exception {
+        String xml = FileUtil.readFile(resourcePath + "/template/TemplateMapper.xml");
         xml = globalReplace(xml);
 
         // 替换%%resultMapRow%%
         StringBuilder tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            String fieldName = field.getName();
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            String fieldName = sqlColumn.getJavaName();
             if (i != 0) {
                 tempBuilder.append("        ");
             }
-            tempBuilder.append("<result property=\"").append(fieldName).append("\" column=\"").append(UnderlineHumpConvertUtil.humpToUnderline(fieldName)).append("\"/>");
-            if (i != fieldList.size() - 1) {
+            tempBuilder.append("<result property=\"").append(fieldName).append("\" column=\"").append(sqlColumn.getName()).append("\"/>");
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
         }
@@ -119,14 +127,13 @@ public class Generater {
 
         // 替换%%columnList%%
         tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            String fieldName = field.getName();
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
             if (i != 0) {
                 tempBuilder.append("        ");
             }
-            tempBuilder.append(UnderlineHumpConvertUtil.humpToUnderline(fieldName)).append(',');
-            if (i != fieldList.size() - 1) {
+            tempBuilder.append(sqlColumn.getName()).append(',');
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
         }
@@ -134,14 +141,14 @@ public class Generater {
 
         // 替换%%insertValues%%
         tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            String fieldName = field.getName();
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            String fieldName = sqlColumn.getJavaName();
             if (i != 0) {
                 tempBuilder.append("        ");
             }
             tempBuilder.append("#{").append(fieldName).append("},");
-            if (i != fieldList.size() - 1) {
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
         }
@@ -149,14 +156,14 @@ public class Generater {
 
         // 替换%%batchInsertValues%%
         tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            String fieldName = field.getName();
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            String fieldName = sqlColumn.getJavaName();
             if (i != 0) {
                 tempBuilder.append("            ");
             }
             tempBuilder.append("#{item.").append(fieldName).append("},");
-            if (i != fieldList.size() - 1) {
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
         }
@@ -164,11 +171,11 @@ public class Generater {
 
         // 替换%%updateSet%%
         tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            boolean isString = field.getType().equals(String.class);
-            String fieldName = field.getName();
-            String dbFieldName = UnderlineHumpConvertUtil.humpToUnderline(fieldName);
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            boolean isString = sqlColumn.getJavaType().equals("String");
+            String fieldName = sqlColumn.getJavaName();
+            String dbFieldName = sqlColumn.getName();
             if (i != 0) {
                 tempBuilder.append("            ");
             }
@@ -182,7 +189,7 @@ public class Generater {
                         "            </if>");
             }
 
-            if (i != fieldList.size() - 1) {
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
         }
@@ -190,11 +197,11 @@ public class Generater {
 
         // 替换%%batchUpdateSet%%
         tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            boolean isString = field.getType().equals(String.class);
-            String fieldName = field.getName();
-            String dbFieldName = UnderlineHumpConvertUtil.humpToUnderline(fieldName);
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            boolean isString = sqlColumn.getJavaType().equals("String");
+            String fieldName = sqlColumn.getJavaName();
+            String dbFieldName = sqlColumn.getName();
             if (i != 0) {
                 tempBuilder.append("                ");
             }
@@ -208,7 +215,7 @@ public class Generater {
                         "                </if>");
             }
 
-            if (i != fieldList.size() - 1) {
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
         }
@@ -216,11 +223,11 @@ public class Generater {
 
         // 替换%%queryCondition%%
         tempBuilder = new StringBuilder();
-        for (int i = 0; i < fieldList.size(); i++) {
-            Field field = fieldList.get(i);
-            boolean isString = field.getType().equals(String.class);
-            String fieldName = field.getName();
-            String dbFieldName = UnderlineHumpConvertUtil.humpToUnderline(fieldName);
+        for (int i = 0; i < sqlColumns.size(); i++) {
+            SqlColumn sqlColumn = sqlColumns.get(i);
+            boolean isString = sqlColumn.getJavaType().equals("String");
+            String fieldName = sqlColumn.getJavaName();
+            String dbFieldName = sqlColumn.getName();
             if (i != 0) {
                 tempBuilder.append("            ");
             }
@@ -234,7 +241,7 @@ public class Generater {
                         "            </if>");
             }
 
-            if (i != fieldList.size() - 1) {
+            if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
         }
@@ -244,17 +251,25 @@ public class Generater {
         FileUtil.createOrOverwriteFile(resourcePath + mapperFileName, xml);
     }
 
-    private static String globalReplace(String fileText) {
-        fileText = fileText.replaceAll("%%daoClassName%%", daoClassName);
-        fileText = fileText.replaceAll("%%mapperClassName%%", mapperClassName);
-        fileText = fileText.replaceAll("%%queryClassName%%", queryClassName);
-        fileText = fileText.replaceAll("%%doClassName%%", doClassName);
+    public static String globalReplace(String fileText) {
         fileText = fileText.replaceAll("%%date%%", DateUtils.format(new Date(), "yyyy-MM-dd HH:mm"));
         fileText = fileText.replaceAll("%%serialVersionUID%%", RandomStringUtils.randomNumeric(18));
         fileText = fileText.replaceAll("%%tableName%%", tableName);
-        fileText = fileText.replaceAll("%%DOReference%%", doReference);
-        fileText = fileText.replaceAll("%%mapperReference%%", mapperReference);
+
+        fileText = fileText.replaceAll("%%doClassName%%", doClassName);
+        fileText = fileText.replaceAll("%%queryClassName%%", queryClassName);
+        fileText = fileText.replaceAll("%%mapperClassName%%", mapperClassName);
+        fileText = fileText.replaceAll("%%daoClassName%%", daoClassName);
+
+        fileText = fileText.replaceAll("%%doReference%%", doReference);
         fileText = fileText.replaceAll("%%queryReference%%", queryReference);
+        fileText = fileText.replaceAll("%%mapperReference%%", mapperReference);
+        fileText = fileText.replaceAll("%%daoReference%%", daoReference);
+
+        fileText = fileText.replaceAll("%%doPackage%%", doPackage);
+        fileText = fileText.replaceAll("%%queryPackage%%", queryPackage);
+        fileText = fileText.replaceAll("%%mapperPackage%%", mapperPackage);
+        fileText = fileText.replaceAll("%%daoPackage%%", daoPackage);
         return fileText;
     }
 

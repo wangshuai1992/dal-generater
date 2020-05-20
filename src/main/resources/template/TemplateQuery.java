@@ -1,3 +1,5 @@
+package %%queryPackage%%;
+
 /**
  * %%queryClassName%%
  *
