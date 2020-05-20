@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="%%mapperReference%%">
+
+    <resultMap id="baseResult" type="%%DOReference%%">
+        <result property="id" column="id"/>
+        %%resultMapRow%%
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="column_List">
+        id,
+        %%columnList%%
+        create_time,
+        update_time
+    </sql>
+
+    <insert id="insert" parameterType="%%DOReference%%"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO %%tableName%% (
+        <include refid="column_List"/>
+        ) VALUES (
+        null,
+        %%insertValues%%
+        now(),
+        now()
+        )
+    </insert>
+
+    <insert id="batchInsert" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO %%tableName%% (
+        <include refid="column_List"/>
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            null,
+            %%batchInsertValues%%
+            now(),
+            now()
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="%%DOReference%%">
+        UPDATE %%tableName%%
+        <set>
+            %%updateSet%%
+            update_time = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="batchUpdateById" parameterType="list">
+        <foreach collection="list" item="item" open="" close="" separator=";">
+            UPDATE %%tableName%%
+            <set>
+                %%batchUpdateSet%%
+                update_time = now()
+            </set>
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+
+    <update id="deleteById" parameterType="java.lang.Long">
+        DELETE FROM %%tableName%%
+        WHERE id = #{id}
+    </update>
+
+    <update id="deleteByIds" parameterType="java.util.List">
+        DELETE FROM %%tableName%%
+        WHERE id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+        SELECT
+        <include refid="column_List"/>
+        FROM %%tableName%%
+        WHERE id = #{id}
+    </select>
+
+    <sql id="query_condition">
+        <where>
+            <if test="id != null">
+                AND %%tableName%%.id = #{id}
+            </if>
+            %%queryCondition%%
+            <if test="createTime != null ">
+                AND %%tableName%%.create_time = #{createTime}
+            </if>
+            <if test="updateTime != null ">
+                AND %%tableName%%.update_time = #{updateTime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="countByQuery" parameterType="%%queryReference%%"
+            resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM %%tableName%%
+        <include refid="query_condition"/>
+    </select>
+
+    <select id="pageQuery" resultMap="baseResult"
+            parameterType="%%queryReference%%">
+        SELECT
+        <include refid="column_List"/>
+        FROM %%tableName%%
+        <include refid="query_condition"/>
+        ORDER BY id DESC
+        LIMIT #{startPos},#{pageSize}
+    </select>
+
+    <select id="fullQuery" resultMap="baseResult"
+            parameterType="%%queryReference%%">
+        SELECT
+        <include refid="column_List"/>
+        FROM %%tableName%%
+        <include refid="query_condition"/>
+    </select>
+
+</mapper>
+
