@@ -19,20 +19,16 @@ public class Generater {
     /**
      * edit
      */
-    public static String entityName = "SellerInfo";
-    public static String sql = "DROP TABLE IF EXISTS `seller_bank_info`;\n" +
-            "CREATE TABLE `seller_bank_info` (\n" +
-            "    `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
-            "    `seller_id` INT(11) NOT NULL COMMENT '卖家id',\n" +
-            "    `bank_name` varchar(128) NOT NULL,\n" +
-            "    `bank_account` varchar(64) NOT NULL,\n" +
-            "    `account_holder` varchar(64) NOT NULL,\n" +
-            "    `ifsc_code` varchar(16) DEFAULT NULL COMMENT '银行代码',\n" +
-            "    `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n" +
-            "    `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
-            "    PRIMARY KEY (`id`),\n" +
-            "    KEY `idx_seller_id` (`seller_id`)\n" +
-            ") ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT='卖家银行卡信息表';";
+    public static String entityName = "SellerCategory";
+    public static String sql = "DROP TABLE IF EXISTS `seller_category`;\n" +
+            "CREATE TABLE `seller_category` (\n" +
+            "  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +
+            "  `seller_id` INT(11) NOT NULL COMMENT '卖家id',\n" +
+            "  `is_major` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否主营，默认是',\n" +
+            "  `category_id_top` int(11) NOT NULL DEFAULT '0' COMMENT '实际商品类目id 一级',\n" +
+            "  PRIMARY KEY (`id`),\n" +
+            "  KEY `seller_id` (`seller_id`)\n" +
+            ") ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT='卖家类目信息表';";
 
     public static String tableName = UnderlineHumpConvertUtil.humpToUnderline(entityName);
     public static String doClassFileName = entityName + "DO.java";
@@ -206,12 +202,12 @@ public class Generater {
                 tempBuilder.append("                ");
             }
             if (!isString) {
-                tempBuilder.append("<if test=\"" + fieldName + " != null\">\n" +
-                        "                    " + dbFieldName + " = #{" + fieldName + "},\n" +
+                tempBuilder.append("<if test=\"item." + fieldName + " != null\">\n" +
+                        "                    " + dbFieldName + " = #{item." + fieldName + "},\n" +
                         "                </if>");
             } else {
-                tempBuilder.append("<if test=\"" + fieldName + " != null and " + fieldName + " != '' \">\n" +
-                        "                    " + dbFieldName + " = #{" + fieldName + "},\n" +
+                tempBuilder.append("<if test=\"item." + fieldName + " != null and item." + fieldName + " != '' \">\n" +
+                        "                    " + dbFieldName + " = #{item." + fieldName + "},\n" +
                         "                </if>");
             }
 
@@ -253,7 +249,7 @@ public class Generater {
 
     public static String globalReplace(String fileText) {
         fileText = fileText.replaceAll("%%date%%", DateUtils.format(new Date(), "yyyy-MM-dd HH:mm"));
-        fileText = fileText.replaceAll("%%serialVersionUID%%", RandomStringUtils.randomNumeric(18));
+        fileText = fileText.replaceAll("%%serialVersionUID%%", RandomStringUtils.randomNumeric(18).replaceAll("0", "1"));
         fileText = fileText.replaceAll("%%tableName%%", tableName);
 
         fileText = fileText.replaceAll("%%doClassName%%", doClassName);

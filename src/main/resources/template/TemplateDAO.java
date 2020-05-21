@@ -11,7 +11,7 @@ package %%daoPackage%%;
 public class %%daoClassName%% {
 
     @Resource
-    private SellerInfoMapper mapper;
+    private %%mapperClassName%% mapper;
 
     public %%queryClassName%%<%%doClassName%%> pageQuery(%%queryClassName%%<%%doClassName%%> query) {
         int count = mapper.countByQuery(query);
