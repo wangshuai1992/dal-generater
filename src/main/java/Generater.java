@@ -1,7 +1,7 @@
 import org.apache.commons.lang3.RandomStringUtils;
 import util.DateUtils;
 import util.FileUtil;
-import util.UnderlineHumpConvertUtil;
+import util.UnderscoreCamelCaseConvertUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -30,7 +30,7 @@ public class Generater {
             "  KEY `seller_id` (`seller_id`)\n" +
             ") ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT='卖家类目信息表';";
 
-    public static String tableName = UnderlineHumpConvertUtil.humpToUnderline(entityName);
+    public static String tableName = UnderscoreCamelCaseConvertUtil.camelCaseToUnderscore(entityName);
     public static String doClassFileName = entityName + "DO.java";
     public static String doClassName = entityName + "DO";
     public static String mapperFileName = entityName + "Mapper.xml";

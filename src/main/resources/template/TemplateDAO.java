@@ -37,7 +37,7 @@ public class %%daoClassName%% {
         }
     }
 
-    public %%doClassName%% findById(Long id) {
+    public %%doClassName%% findById(long id) {
         return mapper.findById(id);
     }
 
@@ -51,7 +51,7 @@ public class %%daoClassName%% {
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(long id) {
         mapper.deleteById(id);
     }
 

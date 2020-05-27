@@ -1,6 +1,6 @@
 import com.alibaba.fastjson.JSON;
 import util.FileUtil;
-import util.UnderlineHumpConvertUtil;
+import util.UnderscoreCamelCaseConvertUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ public class DOGenerater {
             String[] strs = row.split(" ");
             SqlColumn sqlColumn = new SqlColumn();
             sqlColumn.setName(strs[0].substring(1, strs[0].length() - 1));
-            sqlColumn.setJavaName(UnderlineHumpConvertUtil.underlineToHump(sqlColumn.getName()));
+            sqlColumn.setJavaName(UnderscoreCamelCaseConvertUtil.underscoreToCamelCase(sqlColumn.getName()));
             sqlColumn.setTypeDef(strs[1]);
             sqlColumn.setJavaType(sqlTypeToJavaType(sqlColumn.getTypeDef()));
             if (strs[strs.length - 2].equalsIgnoreCase("comment")) {

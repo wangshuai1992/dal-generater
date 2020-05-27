@@ -7,7 +7,7 @@ package util;
  * @version V1.0
  * @date 2020-05-20 16:52
  */
-public class UnderlineHumpConvertUtil {
+public class UnderscoreCamelCaseConvertUtil {
 
     /***
      * 下划线命名转为驼峰命名
@@ -15,7 +15,7 @@ public class UnderlineHumpConvertUtil {
      * @param para
      *        下划线命名的字符串
      */
-    public static String underlineToHump(String para) {
+    public static String underscoreToCamelCase(String para) {
         StringBuilder result = new StringBuilder();
         String a[] = para.split("_");
         for (String s : a) {
@@ -40,7 +40,7 @@ public class UnderlineHumpConvertUtil {
      * @param para
      *        驼峰命名的字符串
      */
-    public static String humpToUnderline(String para) {
+    public static String camelCaseToUnderscore(String para) {
         StringBuilder sb = new StringBuilder(para);
         //定位
         int temp = 0;

@@ -47,7 +47,7 @@ public interface %%mapperClassName%% {
      * @param id
      * @return
      */
-    int deleteById(Long id);
+    int deleteById(long id);
 
     /**
      * 根据ids批量删除
@@ -63,7 +63,7 @@ public interface %%mapperClassName%% {
      * @param id
      * @return
      */
-    %%doClassName%% findById(Long id);
+    %%doClassName%% findById(long id);
 
     /**
      * 查询总数
