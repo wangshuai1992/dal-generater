@@ -10,10 +10,10 @@
     </resultMap>
 
     <sql id="column_List">
-        id,
+        %%tableName%%.id,
         %%columnList%%
-        create_time,
-        update_time
+        %%tableName%%.create_time,
+        %%tableName%%.update_time
     </sql>
 
     <insert id="insert" parameterType="%%doReference%%"

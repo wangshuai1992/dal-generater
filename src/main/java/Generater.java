@@ -128,7 +128,7 @@ public class Generater {
             if (i != 0) {
                 tempBuilder.append("        ");
             }
-            tempBuilder.append(sqlColumn.getName()).append(',');
+            tempBuilder.append(tableName).append('.').append(sqlColumn.getName()).append(',');
             if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n");
             }
