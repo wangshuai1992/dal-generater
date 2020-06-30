@@ -24,6 +24,7 @@ public class DOGenerater {
         List<SqlColumn> sqlColumns = new ArrayList<>();
         for (String row : rowList) {
             String[] strs = row.split(" ");
+            int commentIndex = row.toLowerCase().indexOf("comment");
             SqlColumn sqlColumn = new SqlColumn();
             sqlColumn.setName(strs[0].substring(1, strs[0].length() - 1));
             sqlColumn.setJavaName(UnderscoreCamelCaseConvertUtil.underscoreToCamelCase(sqlColumn.getName()));
@@ -31,6 +32,9 @@ public class DOGenerater {
             sqlColumn.setJavaType(sqlTypeToJavaType(sqlColumn.getTypeDef()));
             if (strs[strs.length - 2].equalsIgnoreCase("comment")) {
                 sqlColumn.setComment(strs[strs.length - 1].substring(1, strs[strs.length - 1].length() - 2));
+            } else if (commentIndex >= 0) {
+                String comment = row.substring(commentIndex + "comment".length() + 2, row.lastIndexOf('\''));
+                sqlColumn.setComment(comment);
             } else {
                 sqlColumn.setComment(sqlColumn.getJavaName());
             }
