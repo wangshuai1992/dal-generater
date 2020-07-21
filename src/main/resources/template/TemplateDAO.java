@@ -28,11 +28,13 @@ public class %%daoClassName%% {
     }
 
     public void insert(%%doClassName%% record) {
-        mapper.insert(record);
+        if (record != null) {
+            mapper.insert(record);
+        }
     }
 
     public void batchInsert(List<%%doClassName%%> records) {
-        if (!records.isEmpty()) {
+        if (!CollectionUtils.isEmpty(records)) {
             mapper.batchInsert(records);
         }
     }
@@ -42,7 +44,9 @@ public class %%daoClassName%% {
     }
 
     public void update(%%doClassName%% record) {
-        mapper.update(record);
+        if (record != null) {
+            mapper.update(record);
+        }
     }
 
     public void batchUpdateById(List<%%doClassName%%> records) {
@@ -56,7 +60,7 @@ public class %%daoClassName%% {
     }
 
     public void deleteByIds(List<Long> idList) {
-        if(idList.isEmpty()) {
+        if (!CollectionUtils.isEmpty(idList)) {
             return;
         }
         mapper.deleteByIds(idList);

@@ -19,25 +19,17 @@ public class Generater {
     /**
      * edit
      */
-    public static String entityName = "SellerMission";
-    public static String sql = "CREATE TABLE `seller_mission` (\n" +
+    public static String entityName = "ShopSetting";
+    public static String sql = "CREATE TABLE `shop_setting` (\n" +
             "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +
-            "  `seller_id` int(11) NOT NULL COMMENT '卖家id',\n" +
-            "  `mission_type` tinyint(4) NOT NULL COMMENT 'mission类型： 1 新人广告促活',\n" +
-            "  `mission_stage` tinyint(4) NOT NULL COMMENT '任务当前阶段',\n" +
-            "  `is_stage_finished` tinyint(4) NOT NULL COMMENT '当前阶段是否完成 0 否，1是',\n" +
-            "  `start_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '该阶段开始时间',\n" +
-            "  `complete_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '该阶段完成时间',\n" +
-            "  `expire_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '该阶段过期时间',\n" +
-            "  `has_reward` tinyint(4) NOT NULL COMMENT '该阶段是否有奖励 0 否，1是',\n" +
-            "  `is_reward_sent` tinyint(4) DEFAULT 0 COMMENT '奖励是否发放 0 否，1是',\n" +
-            "  `ext_info` varchar(256) DEFAULT NULL COMMENT '扩展信息',\n" +
+            "  `wholee_uid` bigint(20) NOT NULL COMMENT 'wholee买家账号的id',\n" +
+            "  `pricing_setting` JSON DEFAULT NULL COMMENT 'pricing setting',\n" +
+            "  `auto_update_setting` JSON DEFAULT NULL COMMENT 'auto update setting',\n" +
             "  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间UTC',\n" +
             "  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间UTC',\n" +
             "  PRIMARY KEY (`id`),\n" +
-            "  KEY `idx_seller_id_mission_type` (`seller_id`, `mission_type`),\n" +
-            "  KEY `idx_expire_time` (`expire_time`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='卖家任务';";
+            "  KEY `idx_wholee_uid` (`wholee_uid`)\n" +
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='shop设置';";
 
     public static String tableName = UnderscoreCamelCaseConvertUtil.camelCaseToUnderscore(entityName);
     public static String doClassFileName = entityName + "DO.java";
@@ -54,7 +46,7 @@ public class Generater {
     /**
      * edit
      */
-    public static String corePackage = "com.clubfactory.center.seller.core";
+    public static String corePackage = "com.clubfactory.dropshipping.core";
     public static String doPackage = corePackage + ".dataobject";
     public static String mapperPackage = corePackage + ".mapper";
     public static String queryPackage = corePackage + ".query";
