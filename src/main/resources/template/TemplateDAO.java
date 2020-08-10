@@ -23,7 +23,7 @@ public class %%daoClassName%% {
         return query;
     }
 
-    int countByQuery(%%queryClassName%%<%%doClassName%%> query) {
+    public int countByQuery(%%queryClassName%%<%%doClassName%%> query) {
         return mapper.countByQuery(query);
     }
 
