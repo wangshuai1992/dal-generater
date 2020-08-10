@@ -19,17 +19,21 @@ public class Generater {
     /**
      * edit
      */
-    public static String entityName = "ShopSetting";
-    public static String sql = "CREATE TABLE `shop_setting` (\n" +
-            "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +
-            "  `wholee_uid` bigint(20) NOT NULL COMMENT 'wholee买家账号的id',\n" +
-            "  `pricing_setting` JSON DEFAULT NULL COMMENT 'pricing setting',\n" +
-            "  `auto_update_setting` JSON DEFAULT NULL COMMENT 'auto update setting',\n" +
-            "  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间UTC',\n" +
-            "  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间UTC',\n" +
+    public static String entityName = "Notification";
+    public static String sql = "CREATE TABLE `notification` (\n" +
+            "  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n" +
+            "  `shop_id` bigint(20) NOT NULL COMMENT 'shopify店铺id',\n" +
+            "  `source` tinyint(4) unsigned NOT NULL COMMENT '消息触发来源，0表示cf触发,1表示shoify触发',\n" +
+            "  `biz_type` varchar(16) NOT NULL COMMENT '业务类型，如商品变更，商品删除，价格变化',\n" +
+            "  `biz_id` char(32) DEFAULT NULL COMMENT '业务id，如商品id，订单id',\n" +
+            "  `title` varchar(128) NOT NULL DEFAULT '' COMMENT '标题',\n" +
+            "  `content` json DEFAULT NULL COMMENT '内容',\n" +
+            "  `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',\n" +
+            "  `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',\n" +
             "  PRIMARY KEY (`id`),\n" +
-            "  KEY `idx_wholee_uid` (`wholee_uid`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='shop设置';";
+            "  UNIQUE KEY `unique_key_1` (`shop_id`,`source`,`biz_id`,`biz_type`),\n" +
+            "  KEY `key_update_time` (`update_time`)\n" +
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4\n";
 
     public static String tableName = UnderscoreCamelCaseConvertUtil.camelCaseToUnderscore(entityName);
     public static String doClassFileName = entityName + "DO.java";

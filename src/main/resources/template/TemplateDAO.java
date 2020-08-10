@@ -23,6 +23,10 @@ public class %%daoClassName%% {
         return query;
     }
 
+    int countByQuery(%%queryClassName%%<%%doClassName%%> query) {
+        return mapper.countByQuery(query);
+    }
+
     public List<%%doClassName%%> fullQuery(%%queryClassName%%<%%doClassName%%> query) {
         return mapper.fullQuery(query);
     }
