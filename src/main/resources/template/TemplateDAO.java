@@ -65,9 +65,8 @@ public class %%daoClassName%% {
 
     public void deleteByIds(List<Long> idList) {
         if (!CollectionUtils.isEmpty(idList)) {
-            return;
+            mapper.deleteByIds(idList);
         }
-        mapper.deleteByIds(idList);
     }
 
 }
