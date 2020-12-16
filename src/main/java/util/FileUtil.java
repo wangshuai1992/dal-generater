@@ -24,6 +24,22 @@ public class FileUtil {
         return builder.toString();
     }
 
+    public static String readFile(InputStream inputStream) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+                String temp;
+                while ((temp = br.readLine()) != null) {
+                    builder.append(temp);
+                    builder.append('\n');
+                }
+            }
+            return builder.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("read file failed.");
+        }
+    }
+
     public static void createOrOverwriteFile(String url, String content) throws IOException {
         System.out.println(url);
         File file = new File(url);
