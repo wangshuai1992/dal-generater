@@ -109,7 +109,14 @@
         <include refid="column_List"/>
         FROM %%tableName%%
         <include refid="query_condition"/>
-        ORDER BY id DESC
+        <choose>
+            <when test="null != sortField and null != sortOrder">
+                ORDER BY ${sortField} ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
         LIMIT #{startPos},#{pageSize}
     </select>
 
@@ -119,6 +126,14 @@
         <include refid="column_List"/>
         FROM %%tableName%%
         <include refid="query_condition"/>
+        <choose>
+            <when test="null != sortField and null != sortOrder">
+                ORDER BY ${sortField} ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
     </select>
 
 </mapper>
