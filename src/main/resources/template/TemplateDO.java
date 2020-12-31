@@ -1,5 +1,7 @@
 package %%doPackage%%;
 
+import java.util.Date;
+
 /**
  * %%doClassName%%
  *

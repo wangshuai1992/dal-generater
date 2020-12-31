@@ -1,5 +1,7 @@
 package %%daoPackage%%;
 
+import org.springframework.util.CollectionUtils;
+
 /**
  * %%daoClassName%%
  *
@@ -56,6 +58,12 @@ public class %%daoClassName%% {
     public void batchUpdateById(List<%%doClassName%%> records) {
         if (!CollectionUtils.isEmpty(records)) {
             mapper.batchUpdateById(records);
+        }
+    }
+
+    public void insertOrUpdate(NewStockHkJisiluDO record) {
+        if (record != null) {
+            mapper.insertOrUpdate(record);
         }
     }
 

@@ -42,6 +42,13 @@ public interface %%mapperClassName%% {
     void batchUpdateById(List<%%doClassName%%> records);
 
     /**
+     * 插入 id相同则更新
+     *
+     * @param record
+     */
+    void insertOrUpdate(%%doClassName%% record);
+
+    /**
      * 根据id删除
      *
      * @param id

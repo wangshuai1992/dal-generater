@@ -62,6 +62,20 @@
         </foreach>
     </update>
 
+    <insert id="insertOrUpdate" parameterType="%%doReference%%"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO %%tableName%% (
+        <include refid="column_List"/>
+        ) VALUES (
+        null,
+        %%insertValues%%
+        now(),
+        now()
+        ) ON DUPLICATE KEY UPDATE
+        %%batchUpdateSet%%
+        update_time = now()
+    </insert>
+
     <update id="deleteById" parameterType="java.lang.Long">
         DELETE FROM %%tableName%%
         WHERE id = #{id}

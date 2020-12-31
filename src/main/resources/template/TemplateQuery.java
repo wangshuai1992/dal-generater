@@ -1,5 +1,7 @@
 package %%queryPackage%%;
 
+import java.util.Date;
+
 /**
  * %%queryClassName%%
  *
