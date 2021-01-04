@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>xin.allonsy</groupId>
-            <artifactId>common</artifactId>
+            <artifactId>allonsy-common</artifactId>
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
