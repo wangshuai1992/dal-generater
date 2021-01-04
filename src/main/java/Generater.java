@@ -1,7 +1,7 @@
 import org.apache.commons.lang3.RandomStringUtils;
-import util.DateUtils;
-import util.FileUtil;
-import util.UnderscoreCamelCaseConvertUtil;
+import xin.allonsy.utils.DateUtils;
+import xin.allonsy.utils.FileUtil;
+import xin.allonsy.utils.UnderscoreCamelCaseConvertUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -19,21 +19,51 @@ public class Generater {
     /**
      * edit
      */
-    public static String entityName = "Notification";
-    public static String sql = "CREATE TABLE `notification` (\n" +
-            "  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,\n" +
-            "  `shop_id` bigint(20) NOT NULL COMMENT 'shopify店铺id',\n" +
-            "  `source` tinyint(4) unsigned NOT NULL COMMENT '消息触发来源，0表示cf触发,1表示shoify触发',\n" +
-            "  `biz_type` varchar(16) NOT NULL COMMENT '业务类型，如商品变更，商品删除，价格变化',\n" +
-            "  `biz_id` char(32) DEFAULT NULL COMMENT '业务id，如商品id，订单id',\n" +
-            "  `title` varchar(128) NOT NULL DEFAULT '' COMMENT '标题',\n" +
-            "  `content` json DEFAULT NULL COMMENT '内容',\n" +
-            "  `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',\n" +
-            "  `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',\n" +
+    public static String entityName = "NewStockHkJisilu";
+    public static String sql = "CREATE TABLE `new_stock_hk_jisilu` (\n" +
+            "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+            "  `stock_code` varchar(256) DEFAULT NULL COMMENT 'stock代码 stock_cd',\n" +
+            "  `stock_name` varchar(256) DEFAULT NULL COMMENT 'stock名称 stock_nm',\n" +
+            "  `market` varchar(256) DEFAULT NULL COMMENT '上市板块 market',\n" +
+            "  `apply_date` varchar(256) DEFAULT NULL COMMENT '申购起始 apply_dt',\n" +
+            "  `apply_date2` datetime DEFAULT NULL COMMENT '申购起始yyyy-MM-dd apply_dt',\n" +
+            "  `apply_end_date` varchar(256) DEFAULT NULL COMMENT '申购截止 apply_end_dt',\n" +
+            "  `apply_end_date2` datetime DEFAULT NULL COMMENT '申购截止yyyy-MM-dd apply_end_dt2',\n" +
+            "  `gray_date` datetime DEFAULT NULL COMMENT '暗盘日 gray_dt',\n" +
+            "  `list_date` datetime DEFAULT NULL COMMENT '上市日 list_dt',\n" +
+            "  `price_min` decimal(10,4) DEFAULT NULL COMMENT '最低询价（港元） price_range',\n" +
+            "  `price_max` decimal(10,4) DEFAULT NULL COMMENT '最高询价（港元） price_range',\n" +
+            "  `issue_price` decimal(10,4) DEFAULT NULL COMMENT '发行价 issue_price',\n" +
+            "  `issue_pe_min` decimal(10,4) DEFAULT NULL COMMENT '发行价pe最低 issue_pe_range',\n" +
+            "  `issue_pe_max` decimal(10,4) DEFAULT NULL COMMENT '发行价pe最高 issue_pe_range',\n" +
+            "  `jsl_advise` varchar(32) DEFAULT NULL COMMENT '是否建议申购 jsl_advise',\n" +
+            "  `jsl_first_incr_rate` varchar(128) DEFAULT NULL COMMENT '预测首日涨幅？ jsl_first_incr_rt',\n" +
+            "  `green_rate` varchar(128) DEFAULT NULL COMMENT '绿鞋保护/公开发售（带百分号的字符串） green_rate',\n" +
+            "  `green_amount` decimal(10,4) DEFAULT NULL COMMENT '绿鞋数量（万股） green_amount',\n" +
+            "  `ref_company` varchar(128) DEFAULT NULL COMMENT '可比公司 ref_company',\n" +
+            "  `above_rate` decimal(10,4) DEFAULT NULL COMMENT '超购倍数 above_rt',\n" +
+            "  `jsl_above_rate` decimal(10,4) DEFAULT NULL COMMENT '预测超购倍数 jsl_above_rate',\n" +
+            "  `single_draw_money` decimal(10,4) DEFAULT NULL COMMENT '一手资金（港元） single_draw_money',\n" +
+            "  `lucky_draw_rate` decimal(10,4) DEFAULT NULL COMMENT '一手中签率（不含%） lucky_draw_rt',\n" +
+            "  `raise_money` decimal(10,4) DEFAULT NULL COMMENT '募资金额（亿港元） raise_money',\n" +
+            "  `gray_incr_rate` decimal(10,4) DEFAULT NULL COMMENT '利弗莫尔暗盘涨福（不含%） gray_incr_rt',\n" +
+            "  `gray_incr_rate2` decimal(10,4) DEFAULT NULL COMMENT 'xx暗盘涨福（不含%） gray_incr_rt2',\n" +
+            "  `first_incr_rt` decimal(10,4) DEFAULT NULL COMMENT '首日涨福（不含%） first_incr_rt',\n" +
+            "  `total_incr_rt` decimal(10,4) DEFAULT NULL COMMENT '至今涨幅（不含%） total_incr_rt',\n" +
+            "  `underwriter` varchar(128) DEFAULT NULL COMMENT '承销商 underwriter',\n" +
+            "  `prospectus` varchar(2048) DEFAULT NULL COMMENT '招股说明书 prospectus',\n" +
+            "  `iporesult` varchar(2048) DEFAULT NULL COMMENT 'ipo配售结果 iporesult',\n" +
+            "  `apply_flg` tinyint(4) unsigned DEFAULT NULL COMMENT 'apply_flg',\n" +
+            "  `list_flg` tinyint(4) unsigned DEFAULT NULL COMMENT 'list_flg',\n" +
+            "  `status_cd` varchar(32) DEFAULT NULL COMMENT 'status_cd',\n" +
+            "  `yx_rate` decimal(10,4) DEFAULT NULL COMMENT 'yx_rate',\n" +
+            "  `has_above_rt` varchar(32) DEFAULT NULL COMMENT '是否正常上市true/false has_above_rt',\n" +
+            "  `notes` varchar(512) DEFAULT NULL COMMENT 'notes',\n" +
+            "  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n" +
+            "  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
             "  PRIMARY KEY (`id`),\n" +
-            "  UNIQUE KEY `unique_key_1` (`shop_id`,`source`,`biz_id`,`biz_type`),\n" +
-            "  KEY `key_update_time` (`update_time`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4\n";
+            "  UNIQUE KEY `idx_stock_code` (`stock_code`)\n" +
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='集思录港股新股数据'";
 
     public static String tableName = UnderscoreCamelCaseConvertUtil.camelCaseToUnderscore(entityName);
     public static String doClassFileName = entityName + "DO.java";
@@ -50,7 +80,7 @@ public class Generater {
     /**
      * edit
      */
-    public static String corePackage = "com.clubfactory.dropshipping.core";
+    public static String corePackage = "com.wangshuai.crawler.dal";
     public static String doPackage = corePackage + ".dataobject";
     public static String mapperPackage = corePackage + ".mapper";
     public static String queryPackage = corePackage + ".query";

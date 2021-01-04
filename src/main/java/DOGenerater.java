@@ -1,6 +1,6 @@
 import com.alibaba.fastjson.JSON;
-import util.FileUtil;
-import util.UnderscoreCamelCaseConvertUtil;
+import xin.allonsy.utils.FileUtil;
+import xin.allonsy.utils.UnderscoreCamelCaseConvertUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
