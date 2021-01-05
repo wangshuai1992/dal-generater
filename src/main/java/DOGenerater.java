@@ -85,6 +85,9 @@ public class DOGenerater {
         if (typeDef.contains("int")) {
             return "Long";
         }
+        if (typeDef.contains("decimal")) {
+            return "BigDecimal";
+        }
         return "String";
     }
 

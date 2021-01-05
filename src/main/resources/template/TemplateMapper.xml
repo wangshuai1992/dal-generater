@@ -72,7 +72,7 @@
         now(),
         now()
         ) ON DUPLICATE KEY UPDATE
-        %%batchUpdateSet%%
+        %%updateSet%%
         update_time = now()
     </insert>
 

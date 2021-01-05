@@ -26,11 +26,12 @@ public class Generater {
             "  `stock_name` varchar(256) DEFAULT NULL COMMENT 'stock名称 stock_nm',\n" +
             "  `market` varchar(256) DEFAULT NULL COMMENT '上市板块 market',\n" +
             "  `apply_date` varchar(256) DEFAULT NULL COMMENT '申购起始 apply_dt',\n" +
-            "  `apply_date2` datetime DEFAULT NULL COMMENT '申购起始yyyy-MM-dd apply_dt',\n" +
+            "  `apply_date2` datetime DEFAULT NULL COMMENT '申购起始yyyy-MM-dd apply_dt2',\n" +
             "  `apply_end_date` varchar(256) DEFAULT NULL COMMENT '申购截止 apply_end_dt',\n" +
             "  `apply_end_date2` datetime DEFAULT NULL COMMENT '申购截止yyyy-MM-dd apply_end_dt2',\n" +
             "  `gray_date` datetime DEFAULT NULL COMMENT '暗盘日 gray_dt',\n" +
-            "  `list_date` datetime DEFAULT NULL COMMENT '上市日 list_dt',\n" +
+            "  `list_date` varchar(256) DEFAULT NULL COMMENT '上市日 list_dt',\n" +
+            "  `list_date2` datetime DEFAULT NULL COMMENT '上市日yyyy-MM-dd list_dt2',\n" +
             "  `price_min` decimal(10,4) DEFAULT NULL COMMENT '最低询价（港元） price_range',\n" +
             "  `price_max` decimal(10,4) DEFAULT NULL COMMENT '最高询价（港元） price_range',\n" +
             "  `issue_price` decimal(10,4) DEFAULT NULL COMMENT '发行价 issue_price',\n" +

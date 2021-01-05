@@ -1,5 +1,7 @@
 package %%mapperPackage%%;
 
+import org.apache.ibatis.annotations.Mapper;
+
 /**
  * %%mapperClassName%%
  *
