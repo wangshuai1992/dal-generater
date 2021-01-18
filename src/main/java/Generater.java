@@ -42,11 +42,11 @@ public class Generater {
             "  `green_rate` varchar(128) DEFAULT NULL COMMENT '绿鞋保护/公开发售（带百分号的字符串） green_rate',\n" +
             "  `green_amount` decimal(10,4) DEFAULT NULL COMMENT '绿鞋数量（万股） green_amount',\n" +
             "  `ref_company` varchar(128) DEFAULT NULL COMMENT '可比公司 ref_company',\n" +
-            "  `above_rate` decimal(10,4) DEFAULT NULL COMMENT '超购倍数 above_rt',\n" +
-            "  `jsl_above_rate` decimal(10,4) DEFAULT NULL COMMENT '预测超购倍数 jsl_above_rate',\n" +
+            "  `jsl_above_rate` decimal(10,4) DEFAULT NULL COMMENT '集思录预测超购倍数 jsl_above_rate',\n" +
             "  `single_draw_money` decimal(10,4) DEFAULT NULL COMMENT '一手资金（港元） single_draw_money',\n" +
             "  `lucky_draw_rate` decimal(10,4) DEFAULT NULL COMMENT '一手中签率（不含%） lucky_draw_rt',\n" +
-            "  `raise_money` decimal(10,4) DEFAULT NULL COMMENT '募资金额（亿港元） raise_money',\n" +
+            "  `raise_money_min` decimal(10,4) DEFAULT NULL COMMENT '募资金额min（亿港元） raise_money',\n" +
+            "  `raise_money_max` decimal(10,4) DEFAULT NULL COMMENT '募资金额max（亿港元） raise_money',\n" +
             "  `gray_incr_rate` decimal(10,4) DEFAULT NULL COMMENT '利弗莫尔暗盘涨福（不含%） gray_incr_rt',\n" +
             "  `gray_incr_rate2` decimal(10,4) DEFAULT NULL COMMENT 'xx暗盘涨福（不含%） gray_incr_rt2',\n" +
             "  `first_incr_rt` decimal(10,4) DEFAULT NULL COMMENT '首日涨福（不含%） first_incr_rt',\n" +
@@ -58,7 +58,7 @@ public class Generater {
             "  `list_flg` tinyint(4) unsigned DEFAULT NULL COMMENT 'list_flg',\n" +
             "  `status_cd` varchar(32) DEFAULT NULL COMMENT 'status_cd',\n" +
             "  `yx_rate` decimal(10,4) DEFAULT NULL COMMENT 'yx_rate',\n" +
-            "  `has_above_rt` varchar(32) DEFAULT NULL COMMENT '是否正常上市true/false has_above_rt',\n" +
+            "  `has_above_rt` varchar(32) DEFAULT NULL COMMENT '是否有超购倍数true/false has_above_rt',\n" +
             "  `notes` varchar(512) DEFAULT NULL COMMENT 'notes',\n" +
             "  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',\n" +
             "  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
