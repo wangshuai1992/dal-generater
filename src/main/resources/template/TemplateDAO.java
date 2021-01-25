@@ -61,7 +61,7 @@ public class %%daoClassName%% {
         }
     }
 
-    public void insertOrUpdate(NewStockHkJisiluDO record) {
+    public void insertOrUpdate(%%doClassName%% record) {
         if (record != null) {
             mapper.insertOrUpdate(record);
         }

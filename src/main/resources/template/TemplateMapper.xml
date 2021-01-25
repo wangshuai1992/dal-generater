@@ -72,7 +72,7 @@
         now(),
         now()
         ) ON DUPLICATE KEY UPDATE
-        %%updateSet%%
+            %%updateSet%%
         update_time = now()
     </insert>
 
