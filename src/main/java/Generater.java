@@ -19,19 +19,33 @@ public class Generater {
     /**
      * edit
      */
-    public static String entityName = "UploadedImage";
-    public static String sql = "CREATE TABLE `uploaded_image` (\n" +
-            "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +
+    public static String entityName = "AmoebaItemSku";
+    public static String sql = "CREATE TABLE `amoeba_item_sku` (\n" +
+            "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+            "  `item_id` bigint(20) unsigned NOT NULL COMMENT '商品id',\n" +
+            "  `sku_id` bigint(20) unsigned NOT NULL COMMENT 'skuId',\n" +
+            "  `shop_id` bigint(20) NOT NULL COMMENT '第三方店铺id',\n" +
             "  `third_product_id` varchar(32) NOT NULL COMMENT '第三方商品id',\n" +
-            "  `cf_image` varchar(256) NOT NULL COMMENT 'cf图片',\n" +
-            "  `shopify_image_id` varchar(64) NOT NULL COMMENT 'shopify图片id',\n" +
-            "  `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间UTC',\n" +
-            "  `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间UTC',\n" +
+            "  `third_sku_id` varchar(32) NOT NULL COMMENT '第三方skuId',\n" +
+            "  `third_sku_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '第三方sku状态 0-下架，1-在架',\n" +
+            "  `third_sku_code` varchar(255) NOT NULL DEFAULT '' COMMENT '第三方sku编码',\n" +
+            "  `third_sku_option` varchar(255) NOT NULL DEFAULT '' COMMENT '第三方sku尺码等信息',\n" +
+            "  `inventory_item_id` varchar(32) DEFAULT NULL COMMENT '第三方库存id',\n" +
+            "  `cost` decimal(20,2) DEFAULT NULL COMMENT 'sku的成本价（美元）',\n" +
+            "  `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',\n" +
+            "  `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',\n" +
+            "  `is_deleted` tinyint(4) NOT NULL COMMENT '是否已删除（0未删除，1已删除）',\n" +
             "  PRIMARY KEY (`id`),\n" +
-            "  KEY `idx_cf_image` (`cf_image`),\n" +
+            "  KEY `idx_item_id_shop_id` (`item_id`,`shop_id`),\n" +
+            "  KEY `idx_third_product_id` (`third_product_id`),\n" +
+            "  KEY `idx_sku_id` (`sku_id`),\n" +
             "  KEY `idx_create_time` (`create_time`),\n" +
             "  KEY `idx_update_time` (`update_time`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='已上传图片记录'\n";
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品sku绑定关系表'\n";
+
+    //逻辑删除字段
+    public static String logicDeleteColumn = "is_deleted";
+    public static boolean hasLogicDeleteColumn = sql.contains("`" + logicDeleteColumn + "`");
 
     public static String tableName = UnderscoreCamelCaseConvertUtil.camelCaseToUnderscore(entityName);
     public static String doClassFileName = entityName + "DO.java";
@@ -61,6 +75,8 @@ public class Generater {
 
     public static void main(String[] args) throws Exception {
         List<SqlColumn> sqlColumns = new DOGenerater().generate();
+        // 逻辑删除字段单独处理
+        sqlColumns.removeIf(sqlColumn -> logicDeleteColumn.equals(sqlColumn.getName()));
         createMapperXML(sqlColumns);
         createQueryJava(sqlColumns);
         createMapperJava();
@@ -84,7 +100,7 @@ public class Generater {
     }
 
     private static void createQueryJava(List<SqlColumn> sqlColumns) throws Exception {
-        String javaFile = FileUtil.readFile(resourcePath + "/template/TemplateQuery.java");
+        String javaFile = hasLogicDeleteColumn ? FileUtil.readFile(resourcePath + "/template/TemplateQueryWithLogicDelete.java") : FileUtil.readFile(resourcePath + "/template/TemplateQuery.java");
         javaFile = globalReplace(javaFile);
 
         // 替换%%fields%%
@@ -106,7 +122,7 @@ public class Generater {
     }
 
     private static void createMapperXML(List<SqlColumn> sqlColumns) throws Exception {
-        String xml = FileUtil.readFile(resourcePath + "/template/TemplateMapper.xml");
+        String xml = hasLogicDeleteColumn ? FileUtil.readFile(resourcePath + "/template/TemplateMapperWithLogicDelete.xml") : FileUtil.readFile(resourcePath + "/template/TemplateMapper.xml");
         xml = globalReplace(xml);
 
         // 替换%%resultMapRow%%
@@ -142,6 +158,9 @@ public class Generater {
         tempBuilder = new StringBuilder();
         for (int i = 0; i < sqlColumns.size(); i++) {
             SqlColumn sqlColumn = sqlColumns.get(i);
+            if (hasLogicDeleteColumn && sqlColumn.getName().equals(logicDeleteColumn)) {
+                continue;
+            }
             String fieldName = sqlColumn.getJavaName();
             if (i != 0) {
                 tempBuilder.append("        ");
@@ -157,6 +176,9 @@ public class Generater {
         tempBuilder = new StringBuilder();
         for (int i = 0; i < sqlColumns.size(); i++) {
             SqlColumn sqlColumn = sqlColumns.get(i);
+            if (hasLogicDeleteColumn && sqlColumn.getName().equals(logicDeleteColumn)) {
+                continue;
+            }
             String fieldName = sqlColumn.getJavaName();
             if (i != 0) {
                 tempBuilder.append("            ");
@@ -172,6 +194,9 @@ public class Generater {
         tempBuilder = new StringBuilder();
         for (int i = 0; i < sqlColumns.size(); i++) {
             SqlColumn sqlColumn = sqlColumns.get(i);
+            if (hasLogicDeleteColumn && sqlColumn.getName().equals(logicDeleteColumn)) {
+                continue;
+            }
             boolean isString = sqlColumn.getJavaType().equals("String");
             String fieldName = sqlColumn.getJavaName();
             String dbFieldName = sqlColumn.getName();
@@ -198,6 +223,9 @@ public class Generater {
         tempBuilder = new StringBuilder();
         for (int i = 0; i < sqlColumns.size(); i++) {
             SqlColumn sqlColumn = sqlColumns.get(i);
+            if (hasLogicDeleteColumn && sqlColumn.getName().equals(logicDeleteColumn)) {
+                continue;
+            }
             boolean isString = sqlColumn.getJavaType().equals("String");
             String fieldName = sqlColumn.getJavaName();
             String dbFieldName = sqlColumn.getName();

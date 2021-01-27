@@ -53,13 +53,16 @@ public class DOGenerater {
     }
 
     private void createDOFile(List<SqlColumn> sqlColumns) throws Exception {
-        String javaFile = FileUtil.readFile(Generater.resourcePath + "/template/TemplateDO.java");
+        String javaFile = Generater.hasLogicDeleteColumn ? FileUtil.readFile(Generater.resourcePath + "/template/TemplateDOWithLogicDelete.java") : FileUtil.readFile(Generater.resourcePath + "/template/TemplateDO.java");
         javaFile = Generater.globalReplace(javaFile);
 
         // 替换%%fields%%
         StringBuilder tempBuilder = new StringBuilder();
         for (int i = 0; i < sqlColumns.size(); i++) {
             SqlColumn sqlColumn = sqlColumns.get(i);
+            if (Generater.hasLogicDeleteColumn && Generater.logicDeleteColumn.equals(sqlColumn.getName())) {
+                continue;
+            }
             tempBuilder.append("    /**\n" +
                     "     * " + sqlColumn.getComment() + "\n" +
                     "     */\n" +
@@ -67,6 +70,9 @@ public class DOGenerater {
             if (i != sqlColumns.size() - 1) {
                 tempBuilder.append("\n\n");
             }
+        }
+        if (Generater.hasLogicDeleteColumn) {
+            tempBuilder.deleteCharAt(tempBuilder.length() - 1);
         }
         javaFile = javaFile.replaceAll("%%fields%%", tempBuilder.toString());
 

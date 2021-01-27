@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="%%mapperReference%%">
+
+    <resultMap id="baseResult" type="%%doReference%%">
+        <result property="id" column="id"/>
+        %%resultMapRow%%
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="column_List">
+        %%tableName%%.id,
+        %%columnList%%
+        %%tableName%%.is_deleted,
+        %%tableName%%.create_time,
+        %%tableName%%.update_time
+    </sql>
+
+    <insert id="insert" parameterType="%%doReference%%"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO %%tableName%% (
+        <include refid="column_List"/>
+        ) VALUES (
+        null,
+        %%insertValues%%
+        0,
+        now(),
+        now()
+        )
+    </insert>
+
+    <insert id="batchInsert" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO %%tableName%% (
+        <include refid="column_List"/>
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            null,
+            %%batchInsertValues%%
+            0,
+            now(),
+            now()
+            )
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="%%doReference%%">
+        UPDATE %%tableName%%
+        <set>
+            %%updateSet%%
+            update_time = now()
+        </set>
+        WHERE id = #{id} AND is_deleted = 0
+    </update>
+
+    <update id="batchUpdateById" parameterType="list">
+        <foreach collection="list" item="item" open="" close="" separator=";">
+            UPDATE %%tableName%%
+            <set>
+                %%batchUpdateSet%%
+                update_time = now()
+            </set>
+            WHERE id = #{item.id} AND is_deleted = 0
+        </foreach>
+    </update>
+
+    <insert id="insertOrUpdate" parameterType="%%doReference%%"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO %%tableName%% (
+        <include refid="column_List"/>
+        ) VALUES (
+        null,
+        %%insertValues%%
+        0,
+        now(),
+        now()
+        ) ON DUPLICATE KEY UPDATE
+            %%updateSet%%
+        update_time = now()
+    </insert>
+
+    <update id="deleteById" parameterType="java.lang.Long">
+        UPDATE %%tableName%%
+        SET update_time = now(), is_deleted = 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="deleteByIds" parameterType="java.util.List">
+        UPDATE %%tableName%% SET update_time = now(), is_deleted = 1
+        WHERE id in
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+        SELECT
+        <include refid="column_List"/>
+        FROM %%tableName%%
+        WHERE is_deleted = 0 AND id = #{id}
+    </select>
+
+    <sql id="query_condition">
+        <where>
+            <if test="id != null">
+                AND %%tableName%%.id = #{id}
+            </if>
+            %%queryCondition%%
+            <if test="isDeleted != null ">
+                AND %%tableName%%.is_deleted = #{isDeleted}
+            </if>
+            <if test="createTime != null ">
+                AND %%tableName%%.create_time = #{createTime}
+            </if>
+            <if test="updateTime != null ">
+                AND %%tableName%%.update_time = #{updateTime}
+            </if>
+        </where>
+    </sql>
+
+    <select id="countByQuery" parameterType="%%queryReference%%"
+            resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM %%tableName%%
+        <include refid="query_condition"/>
+    </select>
+
+    <select id="pageQuery" resultMap="baseResult"
+            parameterType="%%queryReference%%">
+        SELECT
+        <include refid="column_List"/>
+        FROM %%tableName%%
+        <include refid="query_condition"/>
+        <choose>
+            <when test="null != sortField and null != sortOrder">
+                ORDER BY ${sortField} ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startPos},#{pageSize}
+    </select>
+
+    <select id="fullQuery" resultMap="baseResult"
+            parameterType="%%queryReference%%">
+        SELECT
+        <include refid="column_List"/>
+        FROM %%tableName%%
+        <include refid="query_condition"/>
+        <choose>
+            <when test="null != sortField and null != sortOrder">
+                ORDER BY ${sortField} ${sortOrder}
+            </when>
+            <otherwise>
+                ORDER BY id DESC
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>
+
