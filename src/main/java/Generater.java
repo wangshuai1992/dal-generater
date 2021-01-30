@@ -19,29 +19,24 @@ public class Generater {
     /**
      * edit
      */
-    public static String entityName = "AmoebaItemSku";
-    public static String sql = "CREATE TABLE `amoeba_item_sku` (\n" +
+    public static String entityName = "ShopifyPublishRecord";
+    public static String sql = "CREATE TABLE `shopify_publish_record` (\n" +
             "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
+            "  `product_id` bigint(20) unsigned NOT NULL COMMENT '货品id',\n" +
             "  `item_id` bigint(20) unsigned NOT NULL COMMENT '商品id',\n" +
-            "  `sku_id` bigint(20) unsigned NOT NULL COMMENT 'skuId',\n" +
             "  `shop_id` bigint(20) NOT NULL COMMENT '第三方店铺id',\n" +
-            "  `third_product_id` varchar(32) NOT NULL COMMENT '第三方商品id',\n" +
-            "  `third_sku_id` varchar(32) NOT NULL COMMENT '第三方skuId',\n" +
-            "  `third_sku_status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '第三方sku状态 0-下架，1-在架',\n" +
-            "  `third_sku_code` varchar(255) NOT NULL DEFAULT '' COMMENT '第三方sku编码',\n" +
-            "  `third_sku_option` varchar(255) NOT NULL DEFAULT '' COMMENT '第三方sku尺码等信息',\n" +
-            "  `inventory_item_id` varchar(32) DEFAULT NULL COMMENT '第三方库存id',\n" +
-            "  `cost` decimal(20,2) DEFAULT NULL COMMENT 'sku的成本价（美元）',\n" +
+            "  `sku_info` json DEFAULT NULL COMMENT '商品sku信息',\n" +
+            "  `operation_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '操作(0-新增,1-更新,2-批量上传)',\n" +
+            "  `operator_id` bigint(20) NOT NULL COMMENT '操作人id',\n" +
             "  `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',\n" +
             "  `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',\n" +
             "  `is_deleted` tinyint(4) NOT NULL COMMENT '是否已删除（0未删除，1已删除）',\n" +
             "  PRIMARY KEY (`id`),\n" +
-            "  KEY `idx_item_id_shop_id` (`item_id`,`shop_id`),\n" +
-            "  KEY `idx_third_product_id` (`third_product_id`),\n" +
-            "  KEY `idx_sku_id` (`sku_id`),\n" +
+            "  KEY `idx_shop_id_item_id` (`shop_id`,`item_id`),\n" +
+            "  KEY `idx_operator_id` (`operator_id`),\n" +
             "  KEY `idx_create_time` (`create_time`),\n" +
             "  KEY `idx_update_time` (`update_time`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品sku绑定关系表'\n";
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='shopify商品发布记录表'\n";
 
     //逻辑删除字段
     public static String logicDeleteColumn = "is_deleted";
