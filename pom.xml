@@ -24,7 +24,7 @@
         <dependency>
             <groupId>xin.allonsy</groupId>
             <artifactId>allonsy-common</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
