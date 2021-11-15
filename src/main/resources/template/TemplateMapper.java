@@ -1,6 +1,7 @@
 package %%mapperPackage%%;
 
 import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
 
 /**
  * %%mapperClassName%%
