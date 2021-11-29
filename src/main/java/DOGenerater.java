@@ -94,6 +94,9 @@ public class DOGenerater {
         if (typeDef.contains("decimal")) {
             return "BigDecimal";
         }
+        if (typeDef.contains("double")) {
+            return "Double";
+        }
         return "String";
     }
 

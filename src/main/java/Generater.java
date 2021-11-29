@@ -19,24 +19,29 @@ public class Generater {
     /**
      * edit
      */
-    public static String entityName = "ShopifyPublishRecord";
-    public static String sql = "CREATE TABLE `shopify_publish_record` (\n" +
-            "  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'id',\n" +
-            "  `product_id` bigint(20) unsigned NOT NULL COMMENT '货品id',\n" +
-            "  `item_id` bigint(20) unsigned NOT NULL COMMENT '商品id',\n" +
-            "  `shop_id` bigint(20) NOT NULL COMMENT '第三方店铺id',\n" +
-            "  `sku_info` json DEFAULT NULL COMMENT '商品sku信息',\n" +
-            "  `operation_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '操作(0-新增,1-更新,2-批量上传)',\n" +
-            "  `operator_id` bigint(20) NOT NULL COMMENT '操作人id',\n" +
-            "  `create_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) COMMENT '创建时间',\n" +
-            "  `update_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3) COMMENT '更新时间',\n" +
-            "  `is_deleted` tinyint(4) NOT NULL COMMENT '是否已删除（0未删除，1已删除）',\n" +
-            "  PRIMARY KEY (`id`),\n" +
-            "  KEY `idx_shop_id_item_id` (`shop_id`,`item_id`),\n" +
-            "  KEY `idx_operator_id` (`operator_id`),\n" +
-            "  KEY `idx_create_time` (`create_time`),\n" +
-            "  KEY `idx_update_time` (`update_time`)\n" +
-            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='shopify商品发布记录表'\n";
+    public static String entityName = "ItemSkuPrice";
+    public static String sql = "CREATE TABLE `item_sku_price` (\n" +
+            "    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',\n" +
+            "    `item_id` bigint(20) unsigned NOT NULL COMMENT 'item id',\n" +
+            "    `item_no` varchar(64) NOT NULL COMMENT 'item_no',\n" +
+            "    `item_sku_id` bigint(20) unsigned NOT NULL COMMENT 'item sku id',\n" +
+            "    `country` varchar(32) NOT NULL COMMENT 'country',\n" +
+            "    `channel` varchar(32) NOT NULL COMMENT 'channel',\n" +
+            "    `currency` varchar(16) NOT NULL COMMENT '币种',\n" +
+            "    `price` decimal(10,4) NOT NULL COMMENT '价格',\n" +
+            "    `prime_price` decimal(10,4) DEFAULT NULL COMMENT '会员价',\n" +
+            "    `marking_price` decimal(10,4) NOT NULL COMMENT '划线价',\n" +
+            "    `po_purchase_price` decimal(10,4) DEFAULT NULL COMMENT 'po采购价',\n" +
+            "    `price_type` int(10) NOT NULL COMMENT '价格类型',\n" +
+            "    `price_update_time` datetime DEFAULT NULL COMMENT '更新时间',\n" +
+            "    `weight` double NOT NULL COMMENT '重量',\n" +
+            "    `ext` json DEFAULT NULL COMMENT 'json扩展字段',\n" +
+            "    `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间UTC',\n" +
+            "    `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
+            "    PRIMARY KEY (`id`),\n" +
+            "    UNIQUE KEY `idx_itemSkuId_country` (`item_sku_id`,`country`),\n" +
+            "    KEY `idx_item_id_country` (`item_id`,`country`)\n" +
+            ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品价格表';";
 
     //逻辑删除字段
     public static String logicDeleteColumn = "is_deleted";
@@ -57,10 +62,13 @@ public class Generater {
     /**
      * edit
      */
-    public static String corePackage = "com.clubfactory.amoeba.product.manager.core";
+    public static String corePackage = "com.clubfactory.item.message.core";
     public static String doPackage = corePackage + ".dataobject";
-    public static String mapperPackage = corePackage + ".mapper";
+//    public static String doPackage = corePackage + ".entity.etlodoo";
+    public static String mapperPackage = corePackage + ".dao";
+//    public static String mapperPackage = corePackage + ".mapper.etlodoo";
     public static String queryPackage = corePackage + ".query";
+//    public static String queryPackage = corePackage + ".entity.etlodoo.query";
     public static String daoPackage = corePackage + ".dao";
 
     public static String doReference = doPackage + "." + doClassName;
