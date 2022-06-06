@@ -18,13 +18,13 @@ public class ShardingCreateTableGenerater {
             "    `country` varchar(32) NOT NULL COMMENT 'country',\n" +
             "    `channel` varchar(32) NOT NULL COMMENT 'channel',\n" +
             "    `currency` varchar(16) NOT NULL COMMENT '币种',\n" +
-            "    `price` decimal(10,4) NOT NULL COMMENT '价格',\n" +
+            "    `price` decimal(10,4) DEFAULT NULL COMMENT '价格',\n" +
             "    `prime_price` decimal(10,4) DEFAULT NULL COMMENT '会员价',\n" +
-            "    `marking_price` decimal(10,4) NOT NULL COMMENT '划线价',\n" +
+            "    `marking_price` decimal(10,4) DEFAULT NULL COMMENT '划线价',\n" +
             "    `po_purchase_price` decimal(10,4) DEFAULT NULL COMMENT 'po采购价',\n" +
             "    `price_type` int(10) NOT NULL COMMENT '价格类型',\n" +
             "    `price_update_time` datetime DEFAULT NULL COMMENT '更新时间',\n" +
-            "    `weight` double NOT NULL COMMENT '重量',\n" +
+            "    `weight` double DEFAULT NULL COMMENT '重量',\n" +
             "    `ext` json DEFAULT NULL COMMENT 'json扩展字段',\n" +
             "    `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间UTC',\n" +
             "    `update_time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',\n" +
@@ -42,17 +42,26 @@ public class ShardingCreateTableGenerater {
         return builder.toString();
     }
 
-    public static String generateDeleteTable(String name, int num) {
+    public static String generateDeleteTable() {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < num; i++) {
-            builder.append("DROP TABLE IF EXISTS " + name + "_" + i + ";\n");
+        for (int i = 0; i < tableNum; i++) {
+            builder.append("DROP TABLE IF EXISTS " + tableName + "_" + i + ";\n");
+        }
+        return builder.toString();
+    }
+
+    public static String generateAlterTable() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < tableNum; i++) {
+            builder.append("ALTER TABLE `" + tableName + "_" + i + "` CHANGE `price_update_time` `price_update_time` DATETIME(3) NULL COMMENT '更新时间';\n");
         }
         return builder.toString();
     }
 
     public static void main(String[] args) {
-        System.out.println(generateShardingCreateTableDDL());
-//        System.out.println(generateDeleteTable("sku", 128));
+        System.out.println(generateDeleteTable());
+//        System.out.println(generateShardingCreateTableDDL());
+//        System.out.println(generateAlterTable());
     }
 
 }

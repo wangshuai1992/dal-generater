@@ -89,7 +89,7 @@
         </foreach>
     </update>
 
-    <select id="findById" resultMap="baseResult" parameterType="java.lang.Long">
+    <select id="getById" resultMap="baseResult" parameterType="java.lang.Long">
         SELECT
         <include refid="column_List"/>
         FROM %%tableName%%

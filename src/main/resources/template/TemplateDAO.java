@@ -47,8 +47,8 @@ public class %%daoClassName%% {
         }
     }
 
-    public %%doClassName%% findById(long id) {
-        return mapper.findById(id);
+    public %%doClassName%% getById(long id) {
+        return mapper.getById(id);
     }
 
     public void update(%%doClassName%% record) {

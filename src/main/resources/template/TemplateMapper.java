@@ -73,7 +73,7 @@ public interface %%mapperClassName%% {
      * @param id
      * @return
      */
-    %%doClassName%% findById(long id);
+    %%doClassName%% getById(long id);
 
     /**
      * 查询总数
